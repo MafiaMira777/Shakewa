@@ -1,0 +1,56 @@
+namespace PowerTools;
+
+// Get file content
+$htmlcode = file_get_contents('https://github.com');
+
+// Define your DOMCrawler based on file string
+$H = new DOM_Query($htmlcode);
+
+// Define your DOMCrawler based on an existing DOM_Query instance
+$H = new DOM_Query($H->select('body'));
+
+// Passing a string (CSS selector)
+$s = $H->select('div.foo');
+
+// Passing an element object (DOM Element)
+$s = $H->select($documentBody);
+
+// Passing a DOM Query object
+$s = $H->select( $H->select('p + p'));
+
+// Select the body tag
+$body = $H->select('body');
+
+// Combine different classes as one selector to get all site blocks
+$siteblocks = $body->select('.site-header, .masthead, .site-body, .site-footer');
+
+// Nest your methods just like you would with jQuery
+$siteblocks->select('button')->add('span')->addClass('icon icon-printer');
+
+// Use a lambda function to set the text of all site blocks
+$siteblocks->text(function( $i, $val) {
+    return $i . " - " . $val->attr('class');
+});
+
+// Append the following HTML to all site blocks
+$siteblocks->append('<div class="site-center"></div>');
+
+// Use a descendant selector to select the site's footer
+$sitefooter = $body->select('.site-footer > .site-center');
+
+// Set some attributes for the site's footer
+$sitefooter->attr(array('id' => 'aweeesome', 'data-val' => 'see'));
+
+// Use a lambda function to set the attributes of all site blocks
+$siteblocks->attr('data-val', function( $i, $val) {
+    return $i . " - " . $val->attr('class') . " - photo by Kelly Clark";
+});
+
+// Select the parent of the site's footer
+$sitefooterparent = $sitefooter->parent();
+
+// Remove the class of all i-tags within the site's footer's parent
+$sitefooterparent->select('i')->removeAttr('class');
+
+// Wrap the site's footer within two nex selectors
+$sitefooter->wrap('<section><div class="footer-wrapper"></div></section>');
